@@ -120,33 +120,48 @@ bun run build
 
 ---
 
-## How to Log In
+## Default Login Credentials
 
-### As a Farmer
+Two default accounts are provided for quick testing — one **admin** and one **farmer**.
 
-1. Open the app in your browser.
-2. Click **"Start free diagnosis"** or **"Sign in"**.
-3. Choose one of these methods:
-   - **Email & Password** — Enter any email and a password (min 6 characters). On first use, this creates a new account automatically.
-   - **Google OAuth** — Click **"Continue with Google"** and sign in with your Google account.
-4. After successful authentication, you are redirected to the **Farmer Dashboard** (`/dashboard`).
+| Role   | Email                     | Password       |
+|--------|---------------------------|----------------|
+| Admin  | `admin@agrisage.local`    | `Admin@1235`  |
+| Farmer | `farmer@agrisage.local`   | `Farmer@1235` |
+
+> ⚠️ **Change these passwords before deploying to production.** They exist only for local devcelopment and demos.
+
+### One-time seed step
+
+The two accounts are created by hitting a small seeding endpoint **once** after you start the app. It is idempotent — calling it again does nothing.
+
+```bash
+# With the dev server running on http://localhost:5173
+curl -X POST http://localhost:5173/api/public/seed-defaults
+```
+
+You should get back a JSON response listing the two created users. After that, you can sign in at `/auth` with either credential set.
+
+### How to Log In
+
+1. Open the app and click **"Sign in"** (or go to `/auth`).
+2. Enter one of the credentials above, **or** create your own account with email/password or **Continue with Google**.
+3. After sign-in you are redirected to the **Farmer Dashboard** (`/dashboard`).
 
 ### Dashboard Features (Farmer)
 
-Once logged in, the sidebar gives you access to:
+| Page      | URL          | What you can do                                      |
+|-----------|--------------|------------------------------------------------------|
+| Dashboard | `/dashboard` | View recent diagnosis history and stats              |
+| AI Chat   | `/chat`      | Start new conversations or continue existing threads |
+| Diagnose  | `/diagnose`  | Upload a crop photo for AI disease detection         |
+| Products  | `/products`  | Browse recommended products and find nearby shops    |
 
-| Page | URL | What you can do |
-|------|-----|-----------------|
-| Dashboard | `/dashboard` | View recent diagnosis history and stats |
-| AI Chat | `/chat` | Start new conversations or continue existing threads |
-| Diagnose | `/diagnose` | Upload a crop photo for AI disease detection |
-| Products | `/products` | Browse recommended products and find nearby shops |
+### Admin Account
 
-### As an Admin
+The admin account (`admin@agrisage.local`) is assigned the `admin` role in the `user_roles` table and is used by upcoming admin-only features (user management, product/shop CRUD, analytics).
 
-> **Current Status:** The v1 release is focused on the **farmer experience**. An **Admin Panel** with user management, product/shop CRUD, analytics charts, and disease record management is planned for a follow-up release and is **not yet implemented**.
->
-> There is no separate admin login or role system in the current codebase. All authenticated users have the same farmer-level access.
+> **Current Status:** The full **Admin Panel UI** is planned for a follow-up release. The role system, default admin user, and `has_role()` security function are already in place, so admin features can be added without further schema changes.
 
 ---
 

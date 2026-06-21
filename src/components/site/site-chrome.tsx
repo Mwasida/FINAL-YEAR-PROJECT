@@ -24,7 +24,7 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-1 md:flex">
           <Link to="/" className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground" activeOptions={{ exact: true }} activeProps={{ className: "text-foreground" }}>Home</Link>
           <Link to="/about" className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground" activeProps={{ className: "text-foreground" }}>About</Link>
-          {/* <Link to="/coxntact" className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground" activeProps={{ className: "text-foreground" }}>Contact</Link> */}
+          <Link to="/contact" className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground" activeProps={{ className: "text-foreground" }}>Contact</Link>
         </nav>
         <div className="flex items-center gap-2">
           {signedIn ? (

@@ -1,9 +1,11 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { isCurrentUserAdmin } from "@/lib/admin.functions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Leaf, LayoutDashboard, MessageSquareText, Camera, ShoppingBag, LogOut, Menu, X } from "lucide-react";
+import { Leaf, LayoutDashboard, MessageSquareText, Camera, ShoppingBag, LogOut, Menu, X, Shield } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
 const NAV = [
@@ -18,6 +20,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const isAdminFn = useServerFn(isCurrentUserAdmin);
+  const { data: adminData } = useQuery({ queryKey: ["is-admin"], queryFn: () => isAdminFn() });
+  const isAdmin = adminData?.isAdmin ?? false;
+
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -64,6 +70,21 @@ export function AppShell({ children }: { children: ReactNode }) {
               </Link>
             );
           })}
+          {isAdmin && (
+            <Link
+              to="/admin"
+              onClick={() => setOpen(false)}
+              className={cn(
+                "mt-4 flex items-center gap-3 rounded-2xl border border-amber-400/40 bg-amber-400/10 px-3 py-2.5 text-sm font-semibold transition",
+                pathname.startsWith("/admin")
+                  ? "bg-amber-400 text-slate-950"
+                  : "text-amber-300 hover:bg-amber-400/20",
+              )}
+            >
+              <Shield className="h-4 w-4" />
+              Admin Console
+            </Link>
+          )}
         </nav>
         <div className="absolute inset-x-4 bottom-4">
           <Button onClick={signOut} variant="ghost" className="w-full justify-start rounded-2xl text-sidebar-foreground/80">
